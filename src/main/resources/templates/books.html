@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Books</title>
+        </head>
+    <body>
+
+        <header>
+            <ul>
+                <li>
+                    <a href="/">Main</a>
+                </li>
+                <li>
+                    <a href="/books">Books</a>
+                </li>
+            </ul>
+        </header>
+
+        <h1>Books</h1>
+        <form th:action="@{/books/search}" method="get">
+            <label for="genre">Search by genre:</label>
+            <input type="text" id="genre" name="genre">
+            <button type="submit">Search</button>
+        </form>
+        <table>
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Genre</th>
+                    <th>Number of pages</th>
+                    <th>Price</th>
+                    <th>Edit</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="book : ${books}">
+                    <td th:text="${book.title}">Title</td>
+                    <td th:text="${book.author}">Author</td>
+                    <td th:text="${book.genre}">Genre</td>
+                    <td th:text="${book.pages}">Number of pages</td>
+                    <td th:text="${book.price}">Price</td>
+                    <td><a th:href="@{/books/{id}/edit(id=${book.id})}">Edit</a></td>
+                    <td><a th:href="@{/books/{id}(id=${book.id})}">View</a></td>
+                    <td>
+                        <form th:action="@{/books/{id}/delete(id=${book.id})}" method="post">
+                            <button type="submit">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <a href="/books/add" style="display: inline-block; border: 1px solid black; color: black; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
+           Add book
+        </a>
+    </body>
+</html>
