@@ -10,17 +10,34 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
+/**
+ * Controller class for managing books.
+ */
 @Controller
 public class BookController {
 
     @Autowired
     BookService bookService;
 
+    /**
+     * Handles GET requests to retrieve all books.
+     *
+     * @param mvcModel the model to hold the list of books
+     * @return the view name to display all books
+     */
     @GetMapping("/books")
     public String get(Model mvcModel){
         mvcModel.addAttribute("books", bookService.getAllBooks());
         return "books";
     }
+
+    /**
+     * Handles GET requests to retrieve a single book by its ID.
+     *
+     * @param id the ID of the book to retrieve
+     * @param mvcModel the model to hold the book details
+     * @return the view name to display the book details, or "404" if not found
+     */
     @GetMapping("/books/{id}")
     public String getOne(@PathVariable("id") long id, Model mvcModel){
         Book book = bookService.getBookById(id);
@@ -28,10 +45,24 @@ public class BookController {
         mvcModel.addAttribute("book", book);
         return "book";
     }
+
+    /**
+     * Handles GET requests to display the form for creating a new book.
+     *
+     * @return the view name for the book creation form
+     */
     @GetMapping("/books/add")
     public String createBookForm(){
         return "bookForm";
     }
+
+    /**
+     * Handles GET requests to display the form for editing an existing book by its ID.
+     *
+     * @param id the ID of the book to edit
+     * @param mvcModel the model to hold the book details
+     * @return the view name for the book edit form, or "404" if not found
+     */
     @GetMapping("/books/{id}/edit")
     public String editBookForm(@PathVariable("id") long id, Model mvcModel){
         Book book = bookService.getBookById(id);
@@ -39,11 +70,27 @@ public class BookController {
         mvcModel.addAttribute("book", bookService.getBookById(id));
         return "bookForm";
     }
+
+    /**
+     * Handles GET requests to search for books by genre.
+     *
+     * @param genre the genre to search for
+     * @param mvcModel the model to hold the list of books matching the genre
+     * @return the view name to display the search results
+     */
     @GetMapping("/books/search")
     public String searchBook(@RequestParam("genre") String genre, Model mvcModel) {
         mvcModel.addAttribute("books", bookService.getAllBooksByGenre(genre));
         return "books";
     }
+
+    /**
+     * Handles POST requests to add a new book.
+     *
+     * @param formData the form data submitted by the user
+     * @param mvcModel the model to hold any validation errors
+     * @return the redirect URL to view the created book, or the book form view if there are validation errors
+     */
     @PostMapping("/books")
     public String add(@RequestBody MultiValueMap<String, String> formData, Model mvcModel){
         Book book = new Book();
@@ -92,6 +139,14 @@ public class BookController {
         return "redirect:/books/" + book.getId();
     }
 
+    /**
+     * Handles POST requests to edit an existing book by its ID.
+     *
+     * @param id the ID of the book to edit
+     * @param formData the form data submitted by the user
+     * @param mvcModel the model to hold any validation errors
+     * @return the redirect URL to view the edited book, or the book form view if there are validation errors
+     */
     @PostMapping("/books/{id}")
     public String edit(@PathVariable("id") long id, @RequestBody MultiValueMap<String, String> formData, Model mvcModel) {
         Book book = bookService.getBookById(id);
@@ -143,6 +198,12 @@ public class BookController {
         return "redirect:/books/" + book.getId();
     }
 
+    /**
+     * Handles POST requests to delete a book by its ID.
+     *
+     * @param id the ID of the book to delete
+     * @return the redirect URL to the list of books
+     */
     @PostMapping("/books/{id}/delete")
     public String delete(@PathVariable("id") long id){
         Book book = bookService.getBookById(id);
